@@ -1,0 +1,41 @@
+import pygame
+
+pygame.init()
+pygame.joystick.init()
+
+# Check for controller
+if pygame.joystick.get_count() == 0:
+    print("No controller found!")
+    exit()
+
+controller = pygame.joystick.Joystick(0)
+controller.init()
+print("Using controller:", controller.get_name())
+
+# Screen setup
+screen = pygame.display.set_mode((400, 400))
+clock = pygame.time.Clock()
+
+x, y = 200, 200
+speed = 5
+running = True
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Joystick axis input (-1.0 to 1.0)
+    horiz = controller.get_axis(0)  # left stick X
+    vert = controller.get_axis(1)   # left stick Y
+
+    x += int(horiz * speed)
+    y += int(vert * speed)
+
+    # Draw
+    screen.fill((0, 0, 0))
+    pygame.draw.rect(screen, (0, 255, 0), (x, y, 40, 40))
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()

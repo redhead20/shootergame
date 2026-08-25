@@ -170,21 +170,27 @@ class Soldier(pygame.sprite.Sprite):
 		for animation in animation_types:
 			#reset temporary list of images
 			temp_list = []
-			#count number of files in the folder
-			num_of_frames = len(os.listdir(f'img/{self.char_type}/{animation}'))
-			for i in range(num_of_frames):
-				img = pygame.image.load(f'img/{self.char_type}/{animation}/{i}.png').convert_alpha()
+			frame_dir = f'img/{self.char_type}/{animation}'
+			frame_files = sorted(
+				(filename for filename in os.listdir(frame_dir) if filename.endswith('.png')),
+				key=lambda filename: int(os.path.splitext(filename)[0])
+			)
+			for filename in frame_files:
+				img = pygame.image.load(os.path.join(frame_dir, filename)).convert_alpha()
 				img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
 				temp_list.append(img)
-			if not temp_list:
-				img = pygame.Surface((TILE_SIZE, int(TILE_SIZE * 1.8)), pygame.SRCALPHA)
-				body_color = (40, 100, 220) if self.char_type == 'player' else (220, 50, 50)
-				pygame.draw.circle(img, (255, 220, 170), (TILE_SIZE // 2, 12), 10)
-				pygame.draw.rect(img, body_color, (10, 22, TILE_SIZE - 20, 28))
-				pygame.draw.rect(img, (25, 25, 25), (12, 50, 10, 35))
-				pygame.draw.rect(img, (25, 25, 25), (TILE_SIZE - 22, 50, 10, 35))
-				temp_list.append(img)
 			self.animation_list.append(temp_list)
+
+		if self.char_type == 'player' and self.animation_list[3]:
+			for animation_index in range(3):
+				if not self.animation_list[animation_index]:
+					self.animation_list[animation_index] = self.animation_list[3]
+
+		for animation_index, animation in enumerate(self.animation_list):
+			if not animation:
+				img = pygame.Surface((TILE_SIZE, int(TILE_SIZE * 1.8)), pygame.SRCALPHA)
+				img.fill((220, 50, 50))
+				self.animation_list[animation_index].append(img)
 
 		self.image = self.animation_list[self.action][self.frame_index]
 		self.rect = self.image.get_rect()

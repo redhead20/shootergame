@@ -66,10 +66,10 @@ start_img = pygame.image.load('img/start_btn.png').convert_alpha()
 exit_img = pygame.image.load('img/exit_btn.png').convert_alpha()
 restart_img = pygame.image.load('img/restart_btn.png').convert_alpha()
 #background
-pine1_img = pygame.image.load('img/Background/pine1.png').convert_alpha()
-pine2_img = pygame.image.load('img/Background/pine2.png').convert_alpha()
-mountain_img = pygame.image.load('img/Background/mountain.png').convert_alpha()
-sky_img = pygame.image.load('img/Background/sky_cloud.png').convert_alpha()
+pine1_img = pygame.image.load('img/background/pine1.png').convert_alpha()
+pine2_img = pygame.image.load('img/background/pine2.png').convert_alpha()
+mountain_img = pygame.image.load('img/background/mountain.png').convert_alpha()
+sky_img = pygame.image.load('img/background/sky_cloud.png').convert_alpha()
 #store tiles in a list
 img_list = []
 for x in range(TILE_TYPES):
@@ -175,6 +175,14 @@ class Soldier(pygame.sprite.Sprite):
 			for i in range(num_of_frames):
 				img = pygame.image.load(f'img/{self.char_type}/{animation}/{i}.png').convert_alpha()
 				img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
+				temp_list.append(img)
+			if not temp_list:
+				img = pygame.Surface((TILE_SIZE, int(TILE_SIZE * 1.8)), pygame.SRCALPHA)
+				body_color = (40, 100, 220) if self.char_type == 'player' else (220, 50, 50)
+				pygame.draw.circle(img, (255, 220, 170), (TILE_SIZE // 2, 12), 10)
+				pygame.draw.rect(img, body_color, (10, 22, TILE_SIZE - 20, 28))
+				pygame.draw.rect(img, (25, 25, 25), (12, 50, 10, 35))
+				pygame.draw.rect(img, (25, 25, 25), (TILE_SIZE - 22, 50, 10, 35))
 				temp_list.append(img)
 			self.animation_list.append(temp_list)
 
